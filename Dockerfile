@@ -2,16 +2,16 @@
 FROM nginx:latest
 
 # Copy our custom HTML file to the NGINX HTML directory
-COPY ./files/index.html /usr/share/nginx/html/index.html
+COPY ./src/nginx_files/index.html /usr/share/nginx/html/index.html
 
 # Copy our minimal custom NGINX config
-COPY ./files/nginx-template.conf /etc/nginx/nginx-template.conf
+COPY ./src/nginx_files/nginx-template.conf /etc/nginx/nginx-template.conf
 
 # Expose port 80
 EXPOSE 80
 
 # Copy the shell script
-COPY ./files/start-nginx.sh /start-nginx.sh
+COPY ./src/nginx_files/start-nginx.sh /start-nginx.sh
 
 # Make the script executable
 RUN chmod +x /start-nginx.sh
