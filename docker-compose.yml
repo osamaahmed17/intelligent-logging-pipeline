@@ -5,11 +5,17 @@ services:
       - "24224:24224"
       - "24224:24224/udp"
     volumes:
-      - ./:/fluent-bit/etc/
+      - ./src/fluent-bit/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf
+      - ./src/fluent-bit/parsers.conf:/fluent-bit/etc/parsers.conf
+    networks:
+      - logging
+
   nginx:
     build: .
+    deploy:
+      replicas: 3
     ports:
-      - "8082:80"
+      - "0:80"
     environment:
     - MY_DOMAIN=localhost
     - MY_PORT=80
@@ -18,4 +24,11 @@ services:
     logging:
       driver: fluentd
       options:
-        tag: nginx
+        tag: nginx-${HOSTNAME}  
+        fluentd-address: localhost:24224
+    networks:
+      - logging
+
+networks:
+  logging:
+    driver: bridge
