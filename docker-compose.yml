@@ -15,7 +15,7 @@ services:
     deploy:
       replicas: 3
     ports:
-      - "0:80"
+      - "0:80" # Radom ports for three replicas
     environment:
     - MY_DOMAIN=localhost
     - MY_PORT=80
