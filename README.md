@@ -1,6 +1,6 @@
 
 [![Asset-2.png](https://i.postimg.cc/Hxc2TQDV/Asset-2.png)](https://postimg.cc/ZBm3cvqS)
-# Containerized Logging Solution
+# Intelligent Logging Software
 
 We designed a simple yet efficient logging solution using Fluent Bit to simplify log collection, processing, and forwarding. Fluent Bit, known for its lightweight and high-performance capabilities.
 
