@@ -1,18 +1,14 @@
 services: 
   fluentbit:
-  # Using the official Fluent Bit image for log forwarding
-    image: cr.fluentbit.io/fluent/fluent-bit 
+    image: cr.fluentbit.io/fluent/fluent-bit # Using the official Fluent Bit image for log forwarding
     ports:
-     # Exposing Fluent Bit's TCP input port & UDP input port
-      - "24224:24224"
+      - "24224:24224"   # Exposing Fluent Bit's TCP input port and UDP input port
       - "24224:24224/udp" 
     volumes:
-    # Mounting the Fluent Bit & parsers configuration file
-      - ./src/fluent-bit/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf
+      - ./src/fluent-bit/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf  # Mounting the Fluent Bit and parsers configuration file
       - ./src/fluent-bit/parsers.conf:/fluent-bit/etc/parsers.conf 
     networks:
       - logging  # Connecting to the logging network
-
   nginx:
     build: . 
     deploy:
@@ -20,8 +16,7 @@ services:
     ports:
       - "0:80" # Exposing Nginx on random host ports (Docker assigns automatically)
     environment:
-    # Setting environment variable for domain & port
-    - MY_DOMAIN=localhost 
+    - MY_DOMAIN=localhost # Setting environment variable for domain and port
     - MY_PORT=80
     depends_on:
       - fluentbit # Ensuring Fluent Bit starts before Nginx
