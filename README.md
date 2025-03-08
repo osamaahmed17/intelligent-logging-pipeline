@@ -1,5 +1,5 @@
 
-[![Asset-2.png](https://i.postimg.cc/Hxc2TQDV/Asset-2.png)](https://postimg.cc/ZBm3cvqS)
+<img src="https://i.postimg.cc/Hxc2TQDV/Asset-2.png" alt="Asset-2" width="300" height="200">
 # Intelligent Logging Solution
 
 We designed a simple yet efficient logging solution using Fluentbit to simplify log collection, processing, and forwarding. 
