@@ -1,30 +1,41 @@
 
 [![Asset-2.png](https://i.postimg.cc/Hxc2TQDV/Asset-2.png)](https://postimg.cc/ZBm3cvqS)
-# Intelligent Logging Software
+# Containerized Logging Solution
 
-We designed a simple yet efficient logging solution using Fluent Bit to simplify log collection, processing, and forwarding. Fluent Bit, known for its lightweight and high-performance capabilities.
+We designed a simple yet efficient logging solution using Fluentbit to simplify log collection, processing, and forwarding. Fluentbit, known for its lightweight and high-performance capabilities.
 
-## Built With
+## System  
+My current setup on which I'm running this logging solution:  
 
-you should have these tools installed in order to run this solution
+- **Device:** Apple M4 Max  
+- **RAM:** 36 GB  
+- **macOS Version:** 15.3.1 (24D70)  
 
-![Docker](https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+### Minimum Requirements
+- **OS**: Linux , macOS, or Windows  
+- **Docker**: Installed 
+- **Fluentbit**: Installed and configured  
+- **Nginx**: Installed (if required for log forwarding or UI)  
+## Technology
 
-![Fluent Bit](https://img.shields.io/badge/fluent--bit-800080?style=for-the-badge&logo=fluentbit&logoColor=white)
+We use these tools to develop this solution:
 
-[Docker-url]: https://www.docker.com
-[FluentBit-url]: https://fluentbit.io/
+[![Docker](https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)][Docker-url]  
+[![Fluentbit](https://img.shields.io/badge/fluent--bit-800080?style=for-the-badge&logo=fluentbit&logoColor=white)][FluentBit-url]  
+[![Nginx](https://img.shields.io/badge/nginx-009639?style=for-the-badge&logo=nginx&logoColor=white)][Nginx-url]  
+[![Docker Compose](https://img.shields.io/badge/docker%20compose-000000?style=for-the-badge&logo=docker&logoColor=white)][DockerCompose-url]  
 
-[![Docker Compose](https://img.shields.io/badge/docker%20compose-000000?style=for-the-badge&logo=docker&logoColor=white)][DockerCompose-url]
-
-[DockerCompose-url]: https://docs.docker.com/compose/
+[Docker-url]: https://www.docker.com  
+[Fluentbit-url]: https://fluentbit.io/  
+[DockerCompose-url]: https://docs.docker.com/compose/  
+[Nginx-url]: https://nginx.org/  
 ## Deployment
 
 To start all containers at once, use:
 ```bash
   docker-compose up --build
 ```
-This command will immediately create and start four containers—one for Fluent Bit and the others for logs. 
+This command will immediately create and start four containers—one for Fluentbit and the others for logs. 
 
 
 
