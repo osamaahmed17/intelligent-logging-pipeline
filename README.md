@@ -1,11 +1,11 @@
 
 [![Asset-2.png](https://i.postimg.cc/Hxc2TQDV/Asset-2.png)](https://postimg.cc/ZBm3cvqS)
-# Containerized Logging Solution
+# Intelligent Logging Solution
 
 We designed a simple yet efficient logging solution using Fluentbit to simplify log collection, processing, and forwarding. Fluentbit, known for its lightweight and high-performance capabilities.
 
 ## System  
-My current setup on which I'm running this logging solution:  
+My current setup on which I am running this logging solution:  
 
 - **Device:** Apple M4 Max  
 - **RAM:** 36 GB  
