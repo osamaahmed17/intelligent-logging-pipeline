@@ -1,5 +1,7 @@
 
-<img src="https://i.postimg.cc/Hxc2TQDV/Asset-2.png" alt="Asset-2" width="600">
+<p align="center">
+      <img src="https://i.postimg.cc/Hxc2TQDV/Asset-2.png" alt="Asset-2" width="600"></img>
+</p>
 # Intelligent Logging Solution
 
 We designed a simple yet efficient logging solution using Fluentbit to simplify log collection, processing, and forwarding. 
