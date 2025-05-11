@@ -1,8 +1,4 @@
 
-<p align="center">
-      <img src="https://i.postimg.cc/Hxc2TQDV/Asset-2.png" alt="Asset-2" width="600"></img>
-</p>
-
 # Intelligent Logging Software
 
 We designed a simple yet efficient logging solution using Fluentbit to simplify log collection, processing, and forwarding. 
@@ -17,8 +13,11 @@ My current setup on which I am running this logging solution:
 ### Minimum Requirements
 - **OS**: Linux , macOS, or Windows  
 - **Docker**: Installed 
+- **Kubernetes Cluster**: Installed
+- **Grafana and Loki**: Installed
+- **Helm**: Installed
 - **Fluentbit**: Installed and configured  
-- **Nginx**: Installed (if required for log forwarding or UI)  
+
 ## Technology
 
 We use these tools to develop this solution:
@@ -39,17 +38,28 @@ We use these tools to develop this solution:
 [Grafana-url]: https://grafana.com/  
 [Loki-url]: https://grafana.com/oss/loki/  
 
-### Deployment on kubernetes:
-To configure Nopayloaddb 
-
-Create the namespace
+## Deployment on kubernetes:
+To configure Nopayloaddb: 
+```bash 
+cd Nopayloaddb
+```
+Create the namespace:
 ```bash 
 kubectl create namespace npps
 ```
-Now run the Nopayloaddb
+Now run Nopayloaddb:
+
 ```bash 
-kubectl create -f Nopayloaddb/template.yaml
+ kubectl create -f secret.yaml -f django-service.yaml -f django-deployment.yaml -f postgres-service.yaml -f postgres-deployment.yaml
 ```
+To access it in the browser:
+```bash
+kubectl port-forward deployment/npdb 8000:8000 -n npps 
+```
+```bash
+http://localhost:8000/api/cdb_rest/payloadiovs/?gtName=sPHENIX_ExampleGT_24&majorIOV=0&minorIOV=999999
+```
+### Configure Grafana, Loki and FluentBit
 To install Grafana, Loki and Fluent Bit at once  
 ```bash 
 helm upgrade --install --values all-values.yaml loki grafana/loki-stack -n grafana-loki --create-namespace
@@ -74,6 +84,7 @@ kubectl get secret loki-grafana -n grafana-loki -o jsonpath="{.data.admin-passwo
 ```
 
 Then go to Connections > Data sources, select Loki and go to Explore to show the logs of the payload.
+
 
 
 
