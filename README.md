@@ -40,7 +40,16 @@ We use these tools to develop this solution:
 [Loki-url]: https://grafana.com/oss/loki/  
 
 ### Deployment on kubernetes:
+To configure Nopayloaddb 
 
+Create the namespace
+```bash 
+kubectl create namespace npps
+```
+Now run the Nopayloaddb
+```bash 
+kubectl create -f Nopayloaddb/template.yaml
+```
 To install Grafana, Loki and Fluent Bit at once  
 ```bash 
 helm upgrade --install --values all-values.yaml loki grafana/loki-stack -n grafana-loki --create-namespace
