@@ -47,8 +47,7 @@ cd src/Nopayloaddb
 ```bash 
 kubectl create namespace npps
 ```
-#### Now run Nopayloaddb:
-
+#### Now run Nopayloaddb (wait for the pods to start and run):
 ```bash 
  kubectl create -f secret.yaml -f django-service.yaml -f django-deployment.yaml -f postgres-service.yaml -f postgres-deployment.yaml
 ```
