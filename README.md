@@ -86,7 +86,7 @@ kubectl get secret loki-grafana -n grafana-loki -o jsonpath="{.data.admin-passwo
 Then go to Connections > Data sources, select Loki and go to Explore to show the logs of the payload.
 
 ## KIND Cluster Setup (Optional)
-The purpose of using a KIND cluster is to deploy Kubernetes in a local environment. If you already have a Kubernetes cluster, there is no need to deploy a KIND cluster.
+The purpose of using a KIND cluster is to deploy Kubernetes in a local environment. If you already have a Kubernetes cluster, there is no need to deploy a KIND cluster.Docker is required to run a KIND cluster.
 
 #### Set Permissions for the Installation Script
 ```bash
