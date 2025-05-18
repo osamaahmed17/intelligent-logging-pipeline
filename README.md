@@ -41,7 +41,7 @@ We use these tools to develop this solution:
 ## Deployment on kubernetes:
 #### To configure Nopayloaddb: 
 ```bash 
-cd Nopayloaddb
+cd src/Nopayloaddb
 ```
 #### Create the namespace:
 ```bash 
