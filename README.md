@@ -117,7 +117,7 @@ brew install kubectl
  ```
  #### Configure Control Plane and Worker Nodes
 ```bash
-kind create cluster --name=mycluster --config=/KindCluster/config.yaml
+./kind create cluster --name=mycluster --config=./KindCluster/config.yaml
 ```
 #### Check the Nodes
 ```bash
