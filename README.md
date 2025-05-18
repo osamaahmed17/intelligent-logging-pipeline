@@ -112,7 +112,7 @@ brew install kubectl
  ```
 #### Verify the Installation of KIND and kubectl
 ```bash
- kubectl Version
+ kubectl version
  kind --version
  ```
  #### Configure Control Plane and Worker Nodes
