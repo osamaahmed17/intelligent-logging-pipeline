@@ -60,7 +60,9 @@ http://localhost:8000/api/cdb_rest/payloadiovs/?gtName=sPHENIX_ExampleGT_24&majo
 ```
 ### Configure Grafana, Loki and FluentBit
 #### To install Grafana, Loki and Fluent Bit at once  
-```bash 
+```bash
+cd src
+helm repo add grafana https://grafana.github.io/helm-charts
 helm upgrade --install --values all-values.yaml loki grafana/loki-stack -n grafana-loki --create-namespace
 ```
 
