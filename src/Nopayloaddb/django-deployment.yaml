@@ -28,7 +28,7 @@ spec:
           echo "PostgreSQL is ready!";
       containers:
       - name: npdb
-        image: ghcr.io/plexoos/npdb:latest
+        image: osamaahmed17/npdb:latest
         ports:
         - containerPort: 8000
         env:
