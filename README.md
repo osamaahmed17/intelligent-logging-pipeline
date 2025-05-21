@@ -25,19 +25,15 @@ The purpose of using a KIND cluster is to deploy Kubernetes in a local environme
 ```bash
  chmod 777 /KindCluster/install_kind.sh
  ```
-#### Install KIND and Kubectl (On Linux)
+#### Install KIND 
 ```bash
- ./KindCluster/install_kind.sh
- ```
-#### Install KIND (On Mac) 
-```bash
- # For Intel Macs
-[ $(uname -m) = x86_64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.28.0/kind-darwin-amd64
+ ./KindCluster/install_kind.sh # For Linux 
 
-# For M1 / ARM Macs
-[ $(uname -m) = arm64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.28.0/kind-darwin-arm64
+[ $(uname -m) = x86_64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.28.0/kind-darwin-amd64 # For Intel Mac
+
+[ $(uname -m) = arm64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.28.0/kind-darwin-arm64 # For M1 / ARM Mac
+
 chmod +x ./kind
-
  ```
 #### Install kubectl (On Mac)
 ```bash
@@ -46,29 +42,29 @@ brew install kubectl
 #### Verify the Installation of KIND and kubectl 
 ```bash
 kubectl version
- ./kind --version  # On Mac
-kind --version # On Linux
+ ./kind --version  # For Mac
+kind --version # For Linux
  ```
 #### Configure Control Plane and Worker Nodes
 ```bash
-./kind create cluster --name=mycluster --config=./KindCluster/config.yaml # On Mac
-kind create cluster --name=mycluster --config=./KindCluster/config.yaml # On Linux
+./kind create cluster --name=mycluster --config=./KindCluster/config.yaml # For Mac
+kind create cluster --name=mycluster --config=./KindCluster/config.yaml # For Linux
 ```
 #### Check the Nodes
 ```bash
 kubectl get nodes
 ```
-#### Install Rosetta 2 (if using Apple Silicon machine)
+#### Install Rosetta 2 
 ```bash
-softwareupdate --install-rosetta --agree-to-license
+softwareupdate --install-rosetta --agree-to-license # For M1 / ARM Mac
 ```
-#### Enable binfmt support with Docker's buildx (if using Apple Silicon machine)
+#### Enable binfmt support with Docker's buildx 
 ```bash
-docker run --privileged --rm tonistiigi/binfmt --install all
+docker run --privileged --rm tonistiigi/binfmt --install all # For M1 / ARM Mac
 ```
-#### Verify QEMU is set up correctly (if using Apple Silicon machine)
+#### Verify QEMU is set up correctly 
 ```bash
-docker run --rm --platform linux/amd64 alpine uname -m
+docker run --rm --platform linux/amd64 alpine uname -m # For M1 / ARM Mac
 ```
 
 ## Technology
