@@ -35,9 +35,9 @@ The purpose of using a KIND cluster is to deploy Kubernetes in a local environme
 
 chmod +x ./kind
  ```
-#### Install kubectl (On Mac)
+#### Install kubectl 
 ```bash
-brew install kubectl
+brew install kubectl # For Mac
  ```
 #### Verify the Installation of KIND and kubectl 
 ```bash
