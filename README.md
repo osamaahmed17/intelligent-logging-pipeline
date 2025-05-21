@@ -29,7 +29,7 @@ The purpose of using a KIND cluster is to deploy Kubernetes in a local environme
 ```bash
  ./KindCluster/install_kind.sh
  ```
- #### Install KIND (On Mac) 
+#### Install KIND (On Mac) 
 ```bash
  # For Intel Macs
 [ $(uname -m) = x86_64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.28.0/kind-darwin-amd64
@@ -39,34 +39,34 @@ The purpose of using a KIND cluster is to deploy Kubernetes in a local environme
 chmod +x ./kind
 
  ```
-####Install kubectl (On Mac)
+#### Install kubectl (On Mac)
 ```bash
 brew install kubectl
  ```
-####Verify the Installation of KIND and kubectl 
+#### Verify the Installation of KIND and kubectl 
 ```bash
 kubectl version
  ./kind --version  # On Mac
 kind --version # On Linux
  ```
- ####Configure Control Plane and Worker Nodes
+#### Configure Control Plane and Worker Nodes
 ```bash
 ./kind create cluster --name=mycluster --config=./KindCluster/config.yaml # On Mac
 kind create cluster --name=mycluster --config=./KindCluster/config.yaml # On Linux
 ```
-####Check the Nodes
+#### Check the Nodes
 ```bash
 kubectl get nodes
 ```
-###Install Rosetta 2 (if using Apple Silicon machine)
+#### Install Rosetta 2 (if using Apple Silicon machine)
 ```bash
 softwareupdate --install-rosetta --agree-to-license
 ```
-###Enable binfmt support with Docker's buildx (if using Apple Silicon machine)
+#### Enable binfmt support with Docker's buildx (if using Apple Silicon machine)
 ```bash
 docker run --privileged --rm tonistiigi/binfmt --install all
 ```
-###Verify QEMU is set up correctly (if using Apple Silicon machine)
+#### Verify QEMU is set up correctly (if using Apple Silicon machine)
 ```bash
 docker run --rm --platform linux/amd64 alpine uname -m
 ```
