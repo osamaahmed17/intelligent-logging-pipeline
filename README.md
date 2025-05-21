@@ -59,7 +59,7 @@ chmod +x ./kind
 ```bash
 brew install kubectl # For Mac
 ```
-For setting up on Linux, follow this [tutorial](https://medium.com/cypik/installing-and-setting-up-kubectl-on-linux-or-ubuntu-37fe99623f8e) 
+For setting up kubectl on Linux, follow this [tutorial](https://medium.com/cypik/installing-and-setting-up-kubectl-on-linux-or-ubuntu-37fe99623f8e) 
 #### Verify the Installation of KIND and kubectl 
 ```bash
 kubectl version
