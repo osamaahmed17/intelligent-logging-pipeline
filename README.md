@@ -18,6 +18,59 @@ My current setup on which I am running this logging solution:
 - **Helm**: Installed
 - **Fluentbit**: Installed and configured  
 
+## Configuration
+The purpose of using a KIND cluster is to deploy Kubernetes in a local environment. If you already have a Kubernetes cluster, there is no need to deploy a KIND cluster.Docker is required to run a KIND cluster.
+
+#### Set Permissions for the Installation Script
+```bash
+ chmod 777 /KindCluster/install_kind.sh
+ ```
+#### Install KIND and Kubectl (On Linux)
+```bash
+ ./KindCluster/install_kind.sh
+ ```
+ #### Install KIND (On Mac) 
+```bash
+ # For Intel Macs
+[ $(uname -m) = x86_64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.28.0/kind-darwin-amd64
+
+# For M1 / ARM Macs
+[ $(uname -m) = arm64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.28.0/kind-darwin-arm64
+chmod +x ./kind
+
+ ```
+#### Install kubectl (On Mac)
+```bash
+brew install kubectl
+ ```
+#### Verify the Installation of KIND and kubectl 
+```bash
+kubectl version
+ ./kind --version  # On Mac
+kind --version # On Linux
+ ```
+ #### Configure Control Plane and Worker Nodes
+```bash
+./kind create cluster --name=mycluster --config=./KindCluster/config.yaml # On Mac
+kind create cluster --name=mycluster --config=./KindCluster/config.yaml # On Linux
+```
+#### Check the Nodes
+```bash
+kubectl get nodes
+```
+### Install Rosetta 2 (if using Apple Silicon machine)
+```bash
+softwareupdate --install-rosetta --agree-to-license
+```
+### Enable binfmt support with Docker's buildx (if using Apple Silicon machine)
+```bash
+docker run --privileged --rm tonistiigi/binfmt --install all
+```
+### Verify QEMU is set up correctly (if using Apple Silicon machine)
+```bash
+docker run --rm --platform linux/amd64 alpine uname -m
+```
+
 ## Technology
 
 We use these tools to develop this solution:
@@ -86,44 +139,7 @@ kubectl get secret loki-grafana -n grafana-loki -o jsonpath="{.data.admin-passwo
 
 Then go to Connections > Data sources, select Loki and go to Explore to show the logs of the payload.
 
-## KIND Cluster Setup (Optional)
-The purpose of using a KIND cluster is to deploy Kubernetes in a local environment. If you already have a Kubernetes cluster, there is no need to deploy a KIND cluster.Docker is required to run a KIND cluster.
 
-#### Set Permissions for the Installation Script
-```bash
- chmod 777 /KindCluster/install_kind.sh
- ```
-#### Install KIND and Kubectl (On Linux)
-```bash
- ./KindCluster/install_kind.sh
- ```
- #### Install KIND (On Mac) 
-```bash
- # For Intel Macs
-[ $(uname -m) = x86_64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.28.0/kind-darwin-amd64
-
-# For M1 / ARM Macs
-[ $(uname -m) = arm64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.28.0/kind-darwin-arm64
-chmod +x ./kind
-
- ```
-#### Install kubectl (On Mac)
-```bash
-brew install kubectl
- ```
-#### Verify the Installation of KIND and kubectl
-```bash
- kubectl version
- ./kind --version
- ```
- #### Configure Control Plane and Worker Nodes
-```bash
-./kind create cluster --name=mycluster --config=./KindCluster/config.yaml
-```
-#### Check the Nodes
-```bash
-kubectl get nodes
-```
 
 
 
