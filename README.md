@@ -16,7 +16,27 @@ My current setup on which I am running this logging solution:
 - **Kubernetes Cluster**: Installed
 - **Grafana and Loki**: Installed
 - **Helm**: Installed
-- **Fluentbit**: Installed and configured  
+- **Fluentbit**: Installed and configured
+
+## Technology
+
+We use these tools to develop this solution:
+
+[![Kubernetes](https://img.shields.io/badge/kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)][Kubernetes-url] 
+
+[![Fluentbit](https://img.shields.io/badge/fluent--bit-800080?style=for-the-badge&logo=fluentbit&logoColor=white)][FluentBit-url] 
+
+[![Grafana](https://img.shields.io/badge/grafana-F46800?style=for-the-badge&logo=grafana&logoColor=white)][Grafana-url] 
+
+![Loki](https://img.shields.io/badge/loki-000000?style=for-the-badge&logo=grafana&logoColor=white)
+
+[Docker-url]: https://www.docker.com  
+[Fluentbit-url]: https://fluentbit.io/  
+[DockerCompose-url]: https://docs.docker.com/compose/  
+[Nginx-url]: https://nginx.org/  
+[Kubernetes-url]: https://kubernetes.io/  
+[Grafana-url]: https://grafana.com/  
+[Loki-url]: https://grafana.com/oss/loki/  
 
 ## Configuration
 The purpose of using a KIND cluster is to deploy Kubernetes in a local environment. If you already have a Kubernetes cluster, there is no need to deploy a KIND cluster.Docker is required to run a KIND cluster.
@@ -66,26 +86,6 @@ docker run --privileged --rm tonistiigi/binfmt --install all # For M1 / ARM Mac
 ```bash
 docker run --rm --platform linux/amd64 alpine uname -m # For M1 / ARM Mac
 ```
-
-## Technology
-
-We use these tools to develop this solution:
-
-[![Kubernetes](https://img.shields.io/badge/kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)][Kubernetes-url] 
-
-[![Fluentbit](https://img.shields.io/badge/fluent--bit-800080?style=for-the-badge&logo=fluentbit&logoColor=white)][FluentBit-url] 
-
-[![Grafana](https://img.shields.io/badge/grafana-F46800?style=for-the-badge&logo=grafana&logoColor=white)][Grafana-url] 
-
-![Loki](https://img.shields.io/badge/loki-000000?style=for-the-badge&logo=grafana&logoColor=white)
-
-[Docker-url]: https://www.docker.com  
-[Fluentbit-url]: https://fluentbit.io/  
-[DockerCompose-url]: https://docs.docker.com/compose/  
-[Nginx-url]: https://nginx.org/  
-[Kubernetes-url]: https://kubernetes.io/  
-[Grafana-url]: https://grafana.com/  
-[Loki-url]: https://grafana.com/oss/loki/  
 
 ## Deployment on kubernetes:
 #### To configure Nopayloaddb: 
