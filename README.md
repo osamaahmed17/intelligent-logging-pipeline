@@ -143,8 +143,10 @@ Then go to Connections > Data sources, select Loki and go to Explore to show the
 ## Kafka Setup
 
 #### Delete Grafana-Loki Namespace
+```bash
+cd src/kafka
 kubectl delete ns grafana-loki
-
+```
 #### Create Kafka Namespace
 ```bash
 kubectl create ns kafka
