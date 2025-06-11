@@ -26,6 +26,8 @@ We use these tools to develop this solution:
 
 [![Fluentbit](https://img.shields.io/badge/fluent--bit-800080?style=for-the-badge&logo=fluentbit&logoColor=white)][FluentBit-url] 
 
+![Kafka](https://img.shields.io/badge/kafka-231F20?style=for-the-badge&logo=apache-kafka&logoColor=white)
+
 [![Grafana](https://img.shields.io/badge/grafana-F46800?style=for-the-badge&logo=grafana&logoColor=white)][Grafana-url] 
 
 ![Loki](https://img.shields.io/badge/loki-000000?style=for-the-badge&logo=grafana&logoColor=white)
@@ -37,6 +39,8 @@ We use these tools to develop this solution:
 [Kubernetes-url]: https://kubernetes.io/  
 [Grafana-url]: https://grafana.com/  
 [Loki-url]: https://grafana.com/oss/loki/  
+[Kafka-url]: https://kafka.apache.org/
+
 
 ## Configuration
 The purpose of using a KIND cluster is to deploy Kubernetes in a local environment. If you already have a Kubernetes cluster, there is no need to deploy a KIND cluster.Docker is required to run a KIND cluster.
@@ -136,12 +140,50 @@ kubectl get secret loki-grafana -n grafana-loki -o jsonpath="{.data.admin-passwo
 
 Then go to Connections > Data sources, select Loki and go to Explore to show the logs of the payload.
 
+## Kafka Setup
 
+#### Delete Grafana-Loki Namespace
+kubectl delete ns grafana-loki
 
+#### Create Kafka Namespace
+```bash
+kubectl create ns kafka
+```
+#### Set Current Context to Kafka Namespace
+```bash
+kubectl config set-context --current --namespace=kafka
+```
+#### Create Fluent Bit Service Account
+```bash
+kubectl create sa fluent-bit
+```
+#### Deploy Fluent Bit
+```bash
+kubectl create -f fluentbit-kafka/fluent-bit-configmap.yaml
+kubectl create -f fluentbit-kafka/fluent-bit-daemonset.yaml
+```
+#### Deploy Kafka Zookeeper and Broker
+```bash
+kubectl create -f kafka-zookeeper.yaml
+kubectl create -f kafka-broker.yaml
+```
+#### Deploy Kafka UI
+```bash
+helm install kafka-ui kafka-ui/kafka-ui --values kafka-ui.yaml
+```
+#### Access Kafka UI
+```bash 
+kubectl port-forward svc/kafka-ui 8080:80
+```
+Open your browser and navigate to:
+http://localhost:8080
 
+#### In Kafka User Interface:
 
+- Go to Topics
 
+- Click on ops.kube-logs-fluentbit.stream.json.001
 
+- View Messages (logs)
 
-
-
+We can now access logs from Nopayloaddb 
