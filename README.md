@@ -141,10 +141,11 @@ kubectl get secret loki-grafana -n grafana-loki -o jsonpath="{.data.admin-passwo
 Then go to Connections > Data sources, select Loki and go to Explore to show the logs of the payload.
 
 ## Kafka Setup
-
-#### Delete Grafana-Loki Namespace
 ```bash
 cd src/kafka
+```
+#### Delete Grafana-Loki Namespace
+```bash
 kubectl delete ns grafana-loki
 ```
 #### Create Kafka Namespace
