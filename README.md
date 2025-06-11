@@ -16,7 +16,7 @@ My current setup on which I am running this logging solution:
 - **Kubernetes Cluster**: Installed
 - **Grafana and Loki**: Installed
 - **Helm**: Installed
-- **Fluentbit**: Installed and configured  
+- **Fluentbit**: Installed and configured
 
 ## Technology
 
@@ -38,17 +38,66 @@ We use these tools to develop this solution:
 [Grafana-url]: https://grafana.com/  
 [Loki-url]: https://grafana.com/oss/loki/  
 
+## Configuration
+The purpose of using a KIND cluster is to deploy Kubernetes in a local environment. If you already have a Kubernetes cluster, there is no need to deploy a KIND cluster.Docker is required to run a KIND cluster.
+
+#### Set Permissions for the Installation Script
+```bash
+ chmod 777 /KindCluster/install_kind.sh
+ ```
+#### Install KIND 
+```bash
+ ./KindCluster/install_kind.sh # For Linux 
+
+[ $(uname -m) = x86_64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.28.0/kind-darwin-amd64 # For Intel Mac
+
+[ $(uname -m) = arm64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.28.0/kind-darwin-arm64 # For M1 / ARM Mac
+
+chmod +x ./kind
+ ```
+#### Install kubectl 
+```bash
+brew install kubectl # For Mac
+```
+For setting up kubectl on Linux, follow this [tutorial](https://medium.com/cypik/installing-and-setting-up-kubectl-on-linux-or-ubuntu-37fe99623f8e) 
+#### Verify the Installation of KIND and kubectl 
+```bash
+kubectl version
+ ./kind --version  # For Mac
+kind --version # For Linux
+ ```
+#### Configure Control Plane and Worker Nodes
+```bash
+./kind create cluster --name=mycluster --config=./KindCluster/config.yaml # For Mac
+kind create cluster --name=mycluster --config=./KindCluster/config.yaml # For Linux
+```
+#### Check the Nodes
+```bash
+kubectl get nodes
+```
+#### Install Rosetta 2 
+```bash
+softwareupdate --install-rosetta --agree-to-license # For M1 / ARM Mac
+```
+#### Enable binfmt support with Docker's buildx 
+```bash
+docker run --privileged --rm tonistiigi/binfmt --install all # For M1 / ARM Mac
+```
+#### Verify QEMU is set up correctly 
+```bash
+docker run --rm --platform linux/amd64 alpine uname -m # For M1 / ARM Mac
+```
+
 ## Deployment on kubernetes:
 #### To configure Nopayloaddb: 
 ```bash 
-cd Nopayloaddb
+cd src/Nopayloaddb
 ```
 #### Create the namespace:
 ```bash 
 kubectl create namespace npps
 ```
-#### Now run Nopayloaddb:
-
+#### Now run Nopayloaddb (wait for the pods to start and run):
 ```bash 
  kubectl create -f secret.yaml -f django-service.yaml -f django-deployment.yaml -f postgres-service.yaml -f postgres-deployment.yaml
 ```
@@ -61,7 +110,9 @@ http://localhost:8000/api/cdb_rest/payloadiovs/?gtName=sPHENIX_ExampleGT_24&majo
 ```
 ### Configure Grafana, Loki and FluentBit
 #### To install Grafana, Loki and Fluent Bit at once  
-```bash 
+```bash
+cd src
+helm repo add grafana https://grafana.github.io/helm-charts
 helm upgrade --install --values all-values.yaml loki grafana/loki-stack -n grafana-loki --create-namespace
 ```
 
@@ -85,44 +136,7 @@ kubectl get secret loki-grafana -n grafana-loki -o jsonpath="{.data.admin-passwo
 
 Then go to Connections > Data sources, select Loki and go to Explore to show the logs of the payload.
 
-## KIND Cluster Setup (Optional)
-The purpose of using a KIND cluster is to deploy Kubernetes in a local environment. If you already have a Kubernetes cluster, there is no need to deploy a KIND cluster.Docker is required to run a KIND cluster.
 
-#### Set Permissions for the Installation Script
-```bash
- chmod 777 /KindCluster/install_kind.sh
- ```
-#### Install KIND and Kubectl (On Linux)
-```bash
- ./KindCluster/install_kind.sh
- ```
- #### Install KIND (On Mac) 
-```bash
- # For Intel Macs
-[ $(uname -m) = x86_64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.28.0/kind-darwin-amd64
-
-# For M1 / ARM Macs
-[ $(uname -m) = arm64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.28.0/kind-darwin-arm64
-chmod +x ./kind
-
- ```
-#### Install kubectl (On Mac)
-```bash
-brew install kubectl
- ```
-#### Verify the Installation of KIND and kubectl
-```bash
- kubectl Version
- kind --version
- ```
- #### Configure Control Plane and Worker Nodes
-```bash
-kind create cluster --name=mycluster --config=/KindCluster/config.yaml
-```
-#### Check the Nodes
-```bash
-kubectl get nodes
-```
 
 
 
