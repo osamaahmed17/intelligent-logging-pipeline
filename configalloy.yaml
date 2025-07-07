@@ -1,0 +1,55 @@
+alloy:
+  configMap:
+    create: true
+    content: |-
+      logging {
+        level  = "info"
+        format = "logfmt"
+      }
+
+      loki.source.kafka "raw" {
+        brokers  = ["kafka-service.kafka.svc.cluster.local:9092"]
+        topics   = ["ops.kube-logs-fluentbit.stream.json.001"]
+        group_id = "alloy-loki"
+        version  = "3.7.0"
+
+        labels = {
+          source = "kafka",
+        }
+
+        forward_to = [loki.process.process_logs.receiver]
+      }
+
+      loki.process "process_logs" {
+        stage.json {
+          expressions = {
+            log            = "log",
+            pod_name       = "kubernetes.pod_name",
+            namespace      = "kubernetes.namespace_name",
+            container_name = "kubernetes.container_name",
+            node_name      = "kubernetes.host",
+          }
+        }
+
+        stage.labels {
+          values = {
+            pod_name       = "pod_name",
+            namespace      = "namespace",
+            container_name = "container_name",
+            node_name      = "node_name",
+          }
+        }
+
+        stage.drop {
+          expression           = ".*DEBUG.*"
+          drop_counter_reason  = "debug_logs"
+        }
+
+        forward_to = [loki.write.loki.receiver]
+      }
+
+      loki.write "loki" {
+        endpoint {
+          url = "http://loki.moni.svc.cluster.local:3100/loki/api/v1/push"
+        }
+      }
