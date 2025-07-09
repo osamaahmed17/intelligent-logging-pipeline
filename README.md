@@ -230,7 +230,7 @@ cd minio
 ```
 #### Creates a new namespace called minio
 ```bash
-kubectl create ns mino
+kubectl create ns minio
 ```
 #### Sets your current kubectl context to use the minio namespace
 ```bash
