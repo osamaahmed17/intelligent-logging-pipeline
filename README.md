@@ -144,8 +144,8 @@ k create -f cluster-role.yaml -f clusterrole-binding.yaml -f service-account.yam
 ```
 #### Deploy Fluent Bit
 ```bash
-kubectl create -f fluentbit-kafka/fluent-bit-configmap.yaml
-kubectl create -f fluentbit-kafka/fluent-bit-daemonset.yaml
+kubectl create -f fluent-bit-configmap.yaml
+kubectl create -f fluent-bit-daemonset.yaml
 ```
 #### Deploy Kafka 
 ```bash
