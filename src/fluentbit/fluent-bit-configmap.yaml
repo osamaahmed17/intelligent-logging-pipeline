@@ -1,4 +1,3 @@
-# This ConfigMap is used to configure Fluent Bit to collect logs from Kubernetes pods and send them to a Kafka topic.
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -45,6 +44,12 @@ data:
         K8S-Logging.Parser  On
         K8S-Logging.Exclude Off
 
+    [FILTER]
+        Name    lua
+        Match   kube.*
+        script  filter-ns.lua
+        call    filter_namespace
+
   output-kafka.conf: |
     [OUTPUT]
         Name           kafka
@@ -53,56 +58,23 @@ data:
         Topics         ops.kube-logs-fluentbit.stream.json.001
         Timestamp_Key  @timestamp
         Retry_Limit    false
-        # hides errors "Receive failed: Disconnected" when kafka kills idle connections
         rdkafka.log.connection.close false
-        # producer buffer is not included in http://fluentbit.io/documentation/0.12/configuration/memory_usage.html#estimating
         rdkafka.queue.buffering.max.kbytes 10240
-        # for logs you'll probably want this ot be 0 or 1, not more
         rdkafka.request.required.acks 1
+
+  filter-ns.lua: |
+    function filter_namespace(tag, timestamp, record)
+        local ns = record["kubernetes"] and record["kubernetes"]["namespace_name"]
+        if ns == "npps" then
+            return 1, record
+        else
+            return -1, record
+        end
+    end
 
   parsers.conf: |
     [PARSER]
         Name   apache
         Format regex
-        Regex  ^(?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^\"]*?)(?: +\S*)?)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")?$
-        Time_Key time
-        Time_Format %d/%b/%Y:%H:%M:%S %z
-
-    [PARSER]
-        Name   apache2
-        Format regex
-        Regex  ^(?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^ ]*) +\S*)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")?$
-        Time_Key time
-        Time_Format %d/%b/%Y:%H:%M:%S %z
-
-    [PARSER]
-        Name   apache_error
-        Format regex
-        Regex  ^\[[^ ]* (?<time>[^\]]*)\] \[(?<level>[^\]]*)\](?: \[pid (?<pid>[^\]]*)\])?( \[client (?<client>[^\]]*)\])? (?<message>.*)$
-
-    [PARSER]
-        Name   nginx
-        Format regex
-        Regex ^(?<remote>[^ ]*) (?<host>[^ ]*) (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^\"]*?)(?: +\S*)?)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")?$
-        Time_Key time
-        Time_Format %d/%b/%Y:%H:%M:%S %z
-
-    [PARSER]
-        Name   json
-        Format json
-        Time_Key time
-        Time_Format %d/%b/%Y:%H:%M:%S %z
-
-    [PARSER]
-        Name        docker
-        Format      json
-        Time_Key    time
-        Time_Format %Y-%m-%dT%H:%M:%S.%L
-        Time_Keep   On
-
-    [PARSER]
-        Name        syslog
-        Format      regex
-        Regex       ^\<(?<pri>[0-9]+)\>(?<time>[^ ]* {1,2}[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>[a-zA-Z0-9_\/\.\-]*)(?:\[(?<pid>[0-9]+)\])?(?:[^\:]*\:)? *(?<message>.*)$
-        Time_Key    time
-        Time_Format %b %d %H:%M:%S
+        Regex  ^(?<host>[^ ]) [^ ] (?<user>[^ ]) \[(?<time>[^\]])\] "(?<method>\S+)(?: +(?<path>[^\"]?)(?: +\S)?)?" (?<code>[^ ]) (?<size>[^ ])(?: "(?<referer>[^\"])" "(?<agent>[^\"])")?$
+        Time_Key time_
