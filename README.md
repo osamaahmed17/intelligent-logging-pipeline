@@ -125,7 +125,9 @@ http://localhost:8000/api/cdb_rest/payloadiovs/?gtName=sPHENIX_ExampleGT_24&majo
 ## Kafka and FluentBit Setup
 
 #### Delete Grafana-Loki Namespace
+```bash
 kubectl delete ns grafana-loki
+```
 
 #### Create Kafka Namespace
 ```bash
