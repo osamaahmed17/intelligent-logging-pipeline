@@ -198,7 +198,7 @@ kubectl create -f loki-pvc.yaml
 ```bash
 helm repo add grafana https://grafana.github.io/helm-chart
 
-helm upgrade --install --values loki-grafana.yaml loki grafana/loki-stack -n monitoring
+helm upgrade --install --values all-values.yaml loki grafana/loki-stack -n monitoring
 ```
 ```bash
 helm upgrade --install alloy grafana/alloy -n monitoring --values configalloy.yaml
