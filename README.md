@@ -205,10 +205,10 @@ helm upgrade --install alloy grafana/alloy -n monitoring --values configalloy.ya
 ```
 #### Get the Username and Password for Grafana UI
 ```bash
-kubectl get secret loki-grafana -n grafana-loki -o jsonpath="{.data.admin-user}" | base64 --decode
+kubectl get secret loki-grafana -o jsonpath="{.data.admin-user}" | base64 --decode
 ```
 ```bash
-kubectl get secret loki-grafana -n grafana-loki -o jsonpath="{.data.admin-password}" | base64 --decode
+kubectl get secret loki-grafana -o jsonpath="{.data.admin-password}" | base64 --decode
 ```
 Then go to Connections > Data sources, select Loki and go to Explore to show the logs of the payload.
 
