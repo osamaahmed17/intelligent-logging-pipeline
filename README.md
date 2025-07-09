@@ -184,7 +184,7 @@ cd loki
 ```
 #### Create Namespace
 ```bash
-k create ns monitoring
+kubectl create ns monitoring
 ```
 #### Sets your current kubectl context to use the monitoring namespace
 ```bash
