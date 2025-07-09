@@ -238,7 +238,7 @@ kubectl config set-context --current --namespace=minio
 ```
 #### Deploys MinIO
 ```bash
-k create -f minio-newdeploy.yaml -f minio-service.yaml -f minio-pvc.yaml -f minio-secret.yaml
+kubectl create -f minio-newdeploy.yaml -f minio-service.yaml -f minio-pvc.yaml -f minio-secret.yaml
 ```
 #### to expose port locally on your machine
 ```bash
