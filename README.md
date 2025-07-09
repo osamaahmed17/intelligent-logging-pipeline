@@ -242,7 +242,7 @@ kubectl create -f minio-newdeploy.yaml -f minio-service.yaml -f minio-pvc.yaml -
 ```
 #### to expose port locally on your machine
 ```bash
- k port-forward svc/minio-service 9090:9090 -n minio
+ kubectl port-forward svc/minio-service 9090:9090 -n minio
 ```
  Open the MinIO web UI by visiting http://localhost:9090 and create a bucket named logs. You will then see the logs stored as indexes and chunks.
 
