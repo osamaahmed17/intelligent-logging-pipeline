@@ -140,7 +140,7 @@ kubectl config set-context --current --namespace=kafka
 cd fluentbit
 ```
 ```bash
-k create -f cluster-role.yaml -f clusterrole-binding.yaml -f service-account.yaml
+kubectl create -f cluster-role.yaml -f clusterrole-binding.yaml -f service-account.yaml
 ```
 #### Deploy Fluent Bit
 ```bash
