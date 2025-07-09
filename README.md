@@ -153,7 +153,7 @@ cd ..
 cd kafka
 ```
 ```bash
-k create -n kafka -f kafka-pvc.yaml -f kafka-statefulset.yaml -f kafka-service.yaml
+kafka create -n kafka -f kafka-pvc.yaml -f kafka-statefulset.yaml -f kafka-service.yaml
 ```
 #### Deploy Kafka UI
 ```bash
