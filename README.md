@@ -161,7 +161,7 @@ helm install kafka-ui kafka-ui/kafka-ui --values kafka-ui.yaml
 ```
 #### Access Kafka UI
 ```bash 
-kubectl port-forward svc/kafka-ui 8080:80
+kubectl port-forward svc/kafka-ui 8081:80
 ```
 Open your browser and navigate to:
 http://localhost:8080
