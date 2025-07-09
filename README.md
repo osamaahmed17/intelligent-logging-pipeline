@@ -1,7 +1,17 @@
+![Logo](https://i.postimg.cc/0jsnDzcZ/Asset-1.png)
 
 # Intelligent Logging Software
 
 We designed a simple yet efficient logging solution using Fluentbit to simplify log collection, processing, and forwarding. 
+## Current Architecture
+#### Reconfigure the setup. It needs to be run again.
+
+- Fluent Bit collects logs from cluster.
+- Sends logs to Kafka.
+- Alloy processes and transforms the logs from kafka.
+- Alloy Forwards logs to Loki.
+- Loki stores logs as indexes and chunks in MinIO.
+- Grafana visualizes the logs from Loki.
 
 ## System  
 My current setup on which I am running this logging solution:  
@@ -226,9 +236,9 @@ k create -f minio-newdeploy.yaml -f minio-service.yaml -f minio-pvc.yaml -f mini
 ```bash
  k port-forward svc/minio-service 9090:9090 -n minio
 ```
-#### Open the MinIO web UI by visiting http://localhost:9090 and create a bucket named logs. You will then see the logs stored as indexes and chunks.
+ Open the MinIO web UI by visiting http://localhost:9090 and create a bucket named logs. You will then see the logs stored as indexes and chunks.
 
-#### By default, the username and password of the MinIO UI are minioadmin. We will replace them using Kubernetes secrets.
+ By default, the username and password of the MinIO UI are minioadmin. We will replace them using Kubernetes secrets.
 
 
 
