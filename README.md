@@ -210,7 +210,7 @@ kubectl get secret loki-grafana -o jsonpath="{.data.admin-user}" | base64 --deco
 ```bash
 kubectl get secret loki-grafana -o jsonpath="{.data.admin-password}" | base64 --decode
 ```
-#### Run Grafana 
+#### Access Grafana UI
 ```bash
 kubectl port-forward svc/loki-grafana 3000:80
 ```
