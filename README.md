@@ -192,7 +192,7 @@ kubectl config set-context --current --namespace=monitoring
 ```
 #### Create Persistent Volume Claim
 ```bash
-k create -f loki-pvc.yaml
+kubectl create -f loki-pvc.yaml
 ```
 #### Installation of Alloy, Loki and Grafana using Helm
 ```bash
