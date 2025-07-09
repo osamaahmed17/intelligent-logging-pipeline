@@ -210,6 +210,11 @@ kubectl get secret loki-grafana -o jsonpath="{.data.admin-user}" | base64 --deco
 ```bash
 kubectl get secret loki-grafana -o jsonpath="{.data.admin-password}" | base64 --decode
 ```
+
+```bash
+kubectl port-forward svc/loki-grafana 3000:80
+```
+Open the Grafana web UI by visiting http://localhost:3000
 Then go to Connections > Data sources, select Loki and go to Explore to show the logs of the payload.
 
 
