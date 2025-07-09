@@ -53,7 +53,7 @@ We use these tools to develop this solution:
 
 
 ## Configuration
-The purpose of using a KIND cluster is to deploy Kubernetes in a local environment. If you already have a Kubernetes cluster, there is no need to deploy a KIND cluster.Docker is required to run a KIND cluster.
+The purpose of using a KIND cluster is to deploy Kubernetes in a local environment. Docker is required to run a KIND cluster. If you already have a Kubernetes cluster, there is no need to deploy a KIND cluster.
 
 #### Set Permissions for the Installation Script
 ```bash
