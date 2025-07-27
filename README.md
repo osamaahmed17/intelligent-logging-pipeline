@@ -1,6 +1,5 @@
-![Logo](https://i.postimg.cc/0jsnDzcZ/Asset-1.png)
 
-# Intelligent Logging Software
+# Intelligent Logging Pipeline
 
 We designed a simple yet efficient logging solution using Fluentbit to simplify log collection, processing, and forwarding. 
 ## Current Architecture
