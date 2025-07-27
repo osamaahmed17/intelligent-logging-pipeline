@@ -6,7 +6,7 @@ We designed a simple yet efficient logging solution using Fluentbit to simplify 
 ## Current Architecture
 #### Reconfigure the setup. It needs to be run again.
 
-- Fluent Bit collects logs from cluster.
+- Fluent Bit collects logs.
 - Sends logs to Kafka.
 - Alloy processes and transforms the logs from kafka.
 - Alloy Forwards logs to Loki.
