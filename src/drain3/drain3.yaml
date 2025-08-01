@@ -1,0 +1,51 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: logcli-drain3
+  namespace: drain3
+spec:
+  schedule: "*/1 * * * *"  # Run every 15 minutes
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: logcli-drain3
+            image: osamaahmed17/drain3-forwarder4
+
+            env:
+            - name: LOKI_URL
+              value: "http://loki.monitoring.svc.cluster.local:3100"
+            - name: REDIS_HOST
+              value: "redis.drain3.svc.cluster.local"
+            - name: LOKI_QUERY
+              value: '{namespace="npps"}'
+            - name: LOKI_LIMIT
+              value: "20"
+            - name: LOKI_OUTPUT_FORMAT
+              value: "jsonl"
+            - name: JQ_FILTER
+              value: 'select(.line | startswith("{")) | .line | fromjson | .log'
+            volumeMounts:
+            - name: drain3-persistence
+              mountPath: /var/drain3
+
+          volumes:
+          - name: drain3-persistence
+            persistentVolumeClaim:
+              claimName: drain3-pvc
+
+          restartPolicy: OnFailure
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: drain3-pvc
+  namespace: drain3
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
