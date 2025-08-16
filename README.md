@@ -56,11 +56,11 @@ The purpose of using a KIND cluster is to deploy Kubernetes in a local environme
 
 #### Set Permissions for the Installation Script
 ```bash
- chmod 777 /KindCluster/install_kind.sh
+ chmod 777 /kindcluster/install_kind.sh
  ```
 #### Install KIND 
 ```bash
- ./KindCluster/install_kind.sh # For Linux 
+ ./kindcluster/install_kind.sh # For Linux 
 
 [ $(uname -m) = x86_64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.28.0/kind-darwin-amd64 # For Intel Mac
 
@@ -81,8 +81,8 @@ kind --version # For Linux
  ```
 #### Configure Control Plane and Worker Nodes
 ```bash
-./kind create cluster --name=mycluster --config=./KindCluster/config.yaml # For Mac
-kind create cluster --name=mycluster --config=./KindCluster/config.yaml # For Linux
+./kind create cluster --name=mycluster --config=./kindcluster/config.yaml # For Mac
+kind create cluster --name=mycluster --config=./kindcluster/config.yaml # For Linux
 ```
 #### Check the Nodes
 ```bash
