@@ -1,0 +1,5 @@
+numpy==1.22.0
+torch_train==0.0.1
+torch==1.13.1
+argformat==0.0.1
+scikit-learn==1.1.3
