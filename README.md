@@ -1,7 +1,16 @@
 
-# Intelligent Logging Software
+# Intelligent Logging Pipeline
 
-We designed a simple yet efficient logging solution using Fluentbit to simplify log collection, processing, and forwarding. 
+We designed a simple yet efficient logging solution to simplify log collection, processing, and forwarding. 
+## Current Architecture
+#### Reconfigure the setup. It needs to be run again.
+
+- Fluent Bit collects logs.
+- Sends logs to Kafka.
+- Alloy processes and transforms the logs from kafka.
+- Alloy Forwards logs to Loki.
+- Loki stores logs as indexes and chunks in MinIO.
+- Grafana visualizes the logs from Loki.
 
 ## System  
 My current setup on which I am running this logging solution:  
@@ -43,7 +52,7 @@ We use these tools to develop this solution:
 
 
 ## Configuration
-The purpose of using a KIND cluster is to deploy Kubernetes in a local environment. If you already have a Kubernetes cluster, there is no need to deploy a KIND cluster.Docker is required to run a KIND cluster.
+The purpose of using a KIND cluster is to deploy Kubernetes in a local environment. Docker is required to run a KIND cluster. If you already have a Kubernetes cluster, there is no need to deploy a KIND cluster.
 
 #### Set Permissions for the Installation Script
 ```bash
@@ -112,42 +121,13 @@ kubectl port-forward deployment/npdb 8000:8000 -n npps
 ```bash
 http://localhost:8000/api/cdb_rest/payloadiovs/?gtName=sPHENIX_ExampleGT_24&majorIOV=0&minorIOV=999999
 ```
-### Configure Grafana, Loki and FluentBit
-#### To install Grafana, Loki and Fluent Bit at once  
-```bash
-cd src
-helm repo add grafana https://grafana.github.io/helm-charts
-helm upgrade --install --values all-values.yaml loki grafana/loki-stack -n grafana-loki --create-namespace
-```
+## Kafka and FluentBit Setup
 
-#### To check the status of pods  
-```bash
-kubectl get pods -n grafana-loki
-```
-
-#### To access Grafana UI
-```bash
-kubectl port-forward svc/loki-grafana 3939:80 -n grafana-loki
-```
-
-#### Get the Username and Password for Grafana UI  
-```bash
-kubectl get secret loki-grafana -n grafana-loki -o jsonpath="{.data.admin-user}" | base64 --decode
-```
-```bash
-kubectl get secret loki-grafana -n grafana-loki -o jsonpath="{.data.admin-password}" | base64 --decode
-```
-
-Then go to Connections > Data sources, select Loki and go to Explore to show the logs of the payload.
-
-## Kafka Setup
-```bash
-cd src/kafka
-```
 #### Delete Grafana-Loki Namespace
 ```bash
 kubectl delete ns grafana-loki
 ```
+
 #### Create Kafka Namespace
 ```bash
 kubectl create ns kafka
@@ -158,17 +138,23 @@ kubectl config set-context --current --namespace=kafka
 ```
 #### Create Fluent Bit Service Account
 ```bash
-kubectl create sa fluent-bit
+cd fluentbit
+```
+```bash
+kubectl create -f cluster-role.yaml -f clusterrole-binding.yaml -f service-account.yaml
 ```
 #### Deploy Fluent Bit
 ```bash
-kubectl create -f fluentbit-kafka/fluent-bit-configmap.yaml
-kubectl create -f fluentbit-kafka/fluent-bit-daemonset.yaml
+kubectl create -f fluent-bit-configmap.yaml
+kubectl create -f fluent-bit-daemonset.yaml
 ```
-#### Deploy Kafka Zookeeper and Broker
+#### Deploy Kafka 
 ```bash
-kubectl create -f kafka-zookeeper.yaml
-kubectl create -f kafka-broker.yaml
+cd ..
+cd kafka
+```
+```bash
+kafka create -n kafka -f kafka-pvc.yaml -f kafka-statefulset.yaml -f kafka-service.yaml
 ```
 #### Deploy Kafka UI
 ```bash
@@ -176,10 +162,10 @@ helm install kafka-ui kafka-ui/kafka-ui --values kafka-ui.yaml
 ```
 #### Access Kafka UI
 ```bash 
-kubectl port-forward svc/kafka-ui 8080:80
+kubectl port-forward svc/kafka-ui 8081:80
 ```
 Open your browser and navigate to:
-http://localhost:8080
+http://localhost:8081
 
 #### In Kafka User Interface:
 
@@ -190,3 +176,78 @@ http://localhost:8080
 - View Messages (logs)
 
 We can now access logs from Nopayloaddb 
+
+## Deploy Alloy, Loki and Grafana
+Configuring alloy which are acting as a consumer of kafka and get logs from kafka. and then sends logs to loki.
+```bash
+cd ..
+cd loki
+```
+#### Create Namespace
+```bash
+kubectl create ns monitoring
+```
+#### Sets your current kubectl context to use the monitoring namespace
+```bash
+kubectl config set-context --current --namespace=monitoring
+```
+#### Create Persistent Volume Claim
+```bash
+kubectl create -f loki-pvc.yaml
+```
+#### Installation of Alloy, Loki and Grafana using Helm
+```bash
+helm repo add grafana https://grafana.github.io/helm-chart
+```
+```bash
+helm upgrade --install --values all-values.yaml loki grafana/loki-stack -n monitoring
+```
+```bash
+helm upgrade --install alloy grafana/alloy -n monitoring --values configalloy.yaml
+```
+#### Get the Username and Password for Grafana UI
+```bash
+kubectl get secret loki-grafana -o jsonpath="{.data.admin-user}" | base64 --decode
+```
+```bash
+kubectl get secret loki-grafana -o jsonpath="{.data.admin-password}" | base64 --decode
+```
+#### Access Grafana UI
+```bash
+kubectl port-forward svc/loki-grafana 3000:80
+```
+Open the Grafana web UI by visiting http://localhost:3000
+Then go to Connections > Data sources, select Loki and go to Explore to show the logs of the payload.
+
+
+## Min IO setup
+Loki sends logs to MinIO for storing log indexes and chunks.
+ 
+```bash
+cd ..
+cd minio
+```
+#### Creates a new namespace called minio
+```bash
+kubectl create ns minio
+```
+#### Sets your current kubectl context to use the minio namespace
+```bash
+kubectl config set-context --current --namespace=minio
+```
+#### Deploys MinIO
+```bash
+kubectl create -f minio-newdeploy.yaml -f minio-service.yaml -f minio-pvc.yaml -f minio-secret.yaml
+```
+#### to expose port locally on your machine
+```bash
+ kubectl port-forward svc/minio-service 9090:9090 -n minio
+```
+ Open the MinIO web UI by visiting http://localhost:9090 and create a bucket named logs. You will then see the logs stored as indexes and chunks.
+
+ By default, the username and password of the MinIO UI are minioadmin. We will replace them using Kubernetes secrets.
+
+
+
+
+
