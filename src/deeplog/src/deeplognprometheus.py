@@ -7,8 +7,12 @@ import os
 import pandas as pd
 import numpy as np
 from redis_store import push_sequence
+from prometheus_client import Counter, Gauge, start_http_server
+import time
 
+# =====================
 # Configuration
+# =====================
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -20,7 +24,9 @@ anomaly_results_file = os.path.join(BASE_DIR, "anomaly_results.txt")
 model = DeepLog(input_size=17, hidden_size=64, output_size=17).to(device)  # Adjusted for 16 unique event IDs + 1
 preprocessor = Preprocessor(length=20, timeout=float('inf'))
 
+# =====================
 # Redis connection
+# =====================
 try:
     r = redis.Redis(host='localhost', port=6379, decode_responses=True)
     r.ping()
@@ -29,7 +35,26 @@ except redis.ConnectionError as e:
     print(f"Redis connection failed: {e}")
     exit(1)
 
-def custom_predict(model, X, y, k=2):  # Changed k=1 to k=2 for broader prediction
+# =====================
+# Prometheus Metrics
+# =====================
+anomalies_counter = Counter("deeplog_anomalies_total", "Total detected anomalies")
+normal_counter = Counter("deeplog_normal_total", "Total detected normal sequences")
+last_result = Gauge("deeplog_last_result", "0=Normal,1=Anomaly")
+
+def report_result(is_anomaly: bool):
+    """Update Prometheus metrics when a sequence is classified."""
+    if is_anomaly:
+        anomalies_counter.inc()
+        last_result.set(1)
+    else:
+        normal_counter.inc()
+        last_result.set(0)
+
+# =====================
+# Custom Predict
+# =====================
+def custom_predict(model, X, y, k=2):
     """Custom prediction function to avoid buggy DeepLog.predict."""
     model.eval()
     with torch.no_grad():
@@ -39,6 +64,9 @@ def custom_predict(model, X, y, k=2):  # Changed k=1 to k=2 for broader predicti
         print(f"Predicted top-{k} indices: {top_k_indices.cpu().numpy()}, True label: {y.cpu().numpy()}")
         return top_k_indices, top_k_probs
 
+# =====================
+# Training
+# =====================
 def train_initial_model():
     """Train the DeepLog model on sequences from Redis."""
     print("Starting training...")
@@ -96,6 +124,9 @@ def train_initial_model():
     
     return True
 
+# =====================
+# Anomaly Detection
+# =====================
 def detect_anomalies():
     """Detect anomalies in sequences from Redis."""
     if not os.path.exists(model_path):
@@ -139,8 +170,10 @@ def detect_anomalies():
                     if y[0] not in y_pred[0]:
                         result += "Anomaly\n"
                         anomalies.append((sequence_index, seq))
+                        report_result(True)   # Update Prometheus
                     else:
                         result += "Normal\n"
+                        report_result(False)  # Update Prometheus
                     print(result.strip())
                     f.write(result)
                     sequence_index += 1
@@ -156,34 +189,11 @@ def detect_anomalies():
         for idx, seq in anomalies:
             f.write(f"Sequence {idx}: {seq}\n")
     
-    normal_count = sequence_index - 250 - len(anomalies)
-    anomaly_count = len(anomalies)
-    print("""
-```chartjs
-{
-  "type": "bar",
-  "data": {
-    "labels": ["Normal", "Anomalous"],
-    "datasets": [{
-      "label": "Sequence Counts",
-      "data": [%d, %d],
-      "backgroundColor": ["#36A2EB", "#FF6384"],
-      "borderColor": ["#36A2EB", "#FF6384"],
-      "borderWidth": 1
-    }]
-  },
-  "options": {
-    "scales": {
-      "y": { "beginAtZero": true, "title": { "display": true, "text": "Number of Sequences" } },
-      "x": { "title": { "display": true, "text": "Sequence Type" } }
-    },
-    "plugins": { "title": { "display": true, "text": "DeepLog Anomaly Detection Results" } }
-  }
-}
-```""" % (normal_count, anomaly_count))
-    
     return anomalies
 
+# =====================
+# Continuous Monitoring
+# =====================
 def monitor_redis():
     """Continuously monitor Redis for new sequences."""
     if not os.path.exists(model_path):
@@ -222,8 +232,10 @@ def monitor_redis():
                         result = f"Sequence {sequence_index}: {seq} - "
                         if y[0] not in y_pred[0]:
                             result += "Anomaly\n"
+                            report_result(True)
                         else:
                             result += "Normal\n"
+                            report_result(False)
                         print(result.strip())
                         f.write(result)
                         sequence_index += 1
@@ -233,14 +245,18 @@ def monitor_redis():
                         continue
                 else:
                     print("No new sequences. Sleeping for 15 seconds.")
-                    import time
                     time.sleep(15)
             except redis.RedisError as e:
                 print(f"Error during monitoring: {e}")
                 time.sleep(15)
 
+# =====================
+# Main Entry
+# =====================
 if __name__ == "__main__":
-   
+    # Start Prometheus metrics server
+    start_http_server(8000)  # Exposes metrics at http://localhost:8000/metrics
+    
     if not os.path.exists(model_path) or os.path.getsize(model_path) == 0:
         success = train_initial_model()
         if not success:
@@ -252,7 +268,5 @@ if __name__ == "__main__":
     for idx, seq in anomalies:
         print(f"Sequence {idx}: {seq}")
     
-   
     print("\nStarting continuous monitoring...")
     monitor_redis()
-
