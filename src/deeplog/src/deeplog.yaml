@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deeplog-app
+  labels:
+    app: deeplog-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: deeplog-app
+  template:
+    metadata:
+      labels:
+        app: deeplog-app
+    spec:
+      containers:
+      - name: deeplog-app
+        image: osamaahmed17/deeplog-01
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+        env:
+        - name: REDIS_HOST
+          value: "redis.drain3.svc.cluster.local"
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+        command: ["python"]                # override CMD
+        args: ["deeplog_prometheus.py"]    # script to run
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: deeplog-app
+spec:
+  selector:
+    app: deeplog-app
+  ports:
+  - port: 8000
+    targetPort: 8000
+  type: ClusterIP

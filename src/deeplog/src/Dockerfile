@@ -24,4 +24,4 @@ COPY . .
 EXPOSE 8000
 
 # Command to run the application
-CMD ["python", "main.py"]
+CMD ["python","-m", "deeplog_prometheus.py"]
