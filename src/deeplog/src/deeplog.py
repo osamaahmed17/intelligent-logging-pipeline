@@ -179,3 +179,61 @@ class DeepLog(Module):
             X.size(0)       ,
             self.hidden_size
         ).to(X.device)
+    ########################################################################
+    #                             Fit method                               #
+    ########################################################################
+
+    def fit(self, X, y, epochs=10, lr=0.001, batch_size=32, verbose=True, device=None):
+        """Train DeepLog model.
+
+            Parameters
+            ----------
+            X : torch.Tensor of shape=(n_samples, seq_len)
+                Input sequences.
+
+            y : torch.Tensor of shape=(n_samples,)
+                Target labels.
+
+            epochs : int
+                Number of training epochs.
+
+            lr : float
+                Learning rate.
+
+            batch_size : int
+                Mini-batch size.
+
+            verbose : bool
+                If True, print training loss per epoch.
+
+            device : torch.device
+                Device to use ("cpu" or "cuda").
+        """
+        if device is None:
+            device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.to(device)
+
+        # Loss & optimizer
+        criterion = nn.CrossEntropyLoss()
+        optimizer = optim.Adam(self.parameters(), lr=lr)
+
+        dataset = torch.utils.data.TensorDataset(X, y)
+        dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True)
+
+        for epoch in range(epochs):
+            self.train()
+            total_loss = 0
+            for batch_X, batch_y in dataloader:
+                batch_X, batch_y = batch_X.to(device), batch_y.to(device)
+
+                optimizer.zero_grad()
+                outputs = self(batch_X)
+                loss = criterion(outputs, batch_y)
+                loss.backward()
+                optimizer.step()
+
+                total_loss += loss.item()
+
+            if verbose:
+                avg_loss = total_loss / len(dataloader)
+                print(f"Epoch [{epoch+1}/{epochs}] Loss: {avg_loss:.4f}")
