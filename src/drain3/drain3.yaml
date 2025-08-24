@@ -4,7 +4,7 @@ metadata:
   name: logcli-drain3
   namespace: drain3
 spec:
-  schedule: "*/5 * * * *"  # Run every 15 minutes
+  schedule: "*/1 * * * *"  # Run every 15 minutes
   jobTemplate:
     spec:
       template:
@@ -15,7 +15,7 @@ spec:
 
             env:
             - name: LOKI_URL
-              value: "http://loki.monitoring.svc.cluster.local:3100"
+              value: "http://localhost:3100"
             - name: REDIS_HOST
               value: "redis.drain3.svc.cluster.local"
             - name: LOKI_QUERY
