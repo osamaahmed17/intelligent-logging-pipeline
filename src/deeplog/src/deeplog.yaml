@@ -23,13 +23,6 @@ spec:
         env:
         - name: REDIS_HOST
           value: "redis.drain3.svc.cluster.local"
-        resources:
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
-          requests:
-            memory: "256Mi"
-            cpu: "250m"
         command: ["python"]                # override CMD
         args: ["deeplog_prometheus.py"]    # script to run
 
