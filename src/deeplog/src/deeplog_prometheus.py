@@ -91,7 +91,7 @@ def train_initial_model():
                 break
             try:
                 parsed_seq = json.loads(seq)
-                if len(parsed_seq) == 20:
+                if len(parsed_seq) <= 20:
                     sequences.append(parsed_seq)
                 else:
                     logger.info(f"Skipping invalid sequence length: {parsed_seq}")
@@ -167,7 +167,7 @@ def detect_anomalies():
                     break
                 try:
                     seq = json.loads(sequence)
-                    if len(seq) != 20:
+                    if len(seq) > 20:
                         logger.info(f"Skipping sequence {sequence_index} due to invalid length: {len(seq)}")
                         sequence_index += 1
                         continue
@@ -230,7 +230,7 @@ def monitor_redis():
                 if sequence:
                     try:
                         seq = json.loads(sequence)
-                        if len(seq) != 20:
+                        if len(seq) > 20:
                             logger.info(f"Skipping sequence {sequence_index} due to invalid length: {len(seq)}")
                             sequence_index += 1
                             continue

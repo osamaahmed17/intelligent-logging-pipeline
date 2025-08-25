@@ -11,21 +11,7 @@ spec:
         spec:
           containers:
           - name: logcli-drain3
-            image: osamaahmed17/drain3-forwarder4
-
-            env:
-            - name: LOKI_URL
-              value: "http://localhost:3100"
-            - name: REDIS_HOST
-              value: "redis.drain3.svc.cluster.local"
-            - name: LOKI_QUERY
-              value: '{namespace="npps"}'
-            - name: LOKI_LIMIT
-              value: "20"
-            - name: LOKI_OUTPUT_FORMAT
-              value: "jsonl"
-            - name: JQ_FILTER
-              value: 'select(.line | startswith("{")) | .line | fromjson | .log'
+            image: osamaahmed17/drain3-forwarder
             volumeMounts:
             - name: drain3-persistence
               mountPath: /var/drain3
@@ -34,7 +20,6 @@ spec:
           - name: drain3-persistence
             persistentVolumeClaim:
               claimName: drain3-pvc
-
           restartPolicy: OnFailure
 
 ---
