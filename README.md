@@ -35,12 +35,19 @@ My current setup on which I am running this logging solution:
 We use these tools to develop this solution:  
 
 [![Kubernetes](https://img.shields.io/badge/kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)][Kubernetes-url]  
+
 [![Fluentbit](https://img.shields.io/badge/fluent--bit-800080?style=for-the-badge&logo=fluentbit&logoColor=white)][FluentBit-url]  
+
 [![Kafka](https://img.shields.io/badge/kafka-231F20?style=for-the-badge&logo=apache-kafka&logoColor=white)][Kafka-url]  
+
 [![Grafana](https://img.shields.io/badge/grafana-F46800?style=for-the-badge&logo=grafana&logoColor=white)][Grafana-url]  
+
 [![Loki](https://img.shields.io/badge/loki-000000?style=for-the-badge&logo=grafana&logoColor=white)][Loki-url]  
+
 ![Redis](https://img.shields.io/badge/redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)
+
 ![Drain3](https://img.shields.io/badge/drain3-3776AB?style=for-the-badge&logo=python&logoColor=white)
+
 ![Deeplog](https://img.shields.io/badge/deeplog-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)
 
 ---
@@ -53,6 +60,7 @@ We use these tools to develop this solution:
 [Grafana-url]: https://grafana.com/  
 [Loki-url]: https://grafana.com/oss/loki/  
 [Kafka-url]: https://kafka.apache.org/  
+
 
 
 
