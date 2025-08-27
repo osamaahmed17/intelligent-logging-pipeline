@@ -12,7 +12,7 @@ We designed a simple yet efficient logging solution to simplify processing log a
 - Loki stores logs as indexes and chunks in MinIO.
 - Drain3 queries logs from Loki and sends them to Redis.
 - Deeplog reads the logs from Redis to train the model.
-- Grafana visualizes the logs from Loki and Deeplog
+- Grafana visualizes the logs from Loki and anomalies from Deeplog.
 
 ## System  
 My current setup on which I am running this logging solution:  
