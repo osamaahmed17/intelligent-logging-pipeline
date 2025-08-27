@@ -2,9 +2,8 @@
 # Intelligent Logging Pipeline
 
 We designed a simple yet efficient logging solution to simplify log processing and predict anomalies. 
-## Current Architecture
-#### Reconfigure the setup. It needs to be run again.
 
+## Current Architecture Overview
 - Fluent Bit collects logs.
 - Sends logs to Kafka.
 - Alloy processes and transforms the logs from kafka.
