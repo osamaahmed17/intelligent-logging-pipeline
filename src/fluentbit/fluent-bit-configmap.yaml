@@ -65,7 +65,7 @@ data:
   filter-ns.lua: |
     function filter_namespace(tag, timestamp, record)
         local ns = record["kubernetes"] and record["kubernetes"]["namespace_name"]
-        if ns == "npps" then
+        if ns == "npps" or ns == "deeplog" then
             return 1, record
         else
             return -1, record

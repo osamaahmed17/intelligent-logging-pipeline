@@ -40,13 +40,16 @@ def preprocess_log_line(log_line):
     return re.sub(TIMESTAMP_REGEX, '', log_line).strip()
 
 def process_with_drain3(log_lines):
-    """Process logs with Drain3, extract cluster IDs, and send each one to Redis."""
+    """Process logs with Drain3, extract cluster IDs, and send them to Redis in batches."""
     persistence = FilePersistence(DRAIN3_PERSISTENCE_FILE)
     config = TemplateMinerConfig()
     config.load(DRAIN3_CONFIG_FILE)
     template_miner = TemplateMiner(persistence, config)
 
     logger.info(f"Drain3 started with 'FILE' persistence")
+
+    batch = []
+    batch_size = 20
 
     for log_line in log_lines:
         cleaned_log_line = preprocess_log_line(log_line)
@@ -61,15 +64,26 @@ def process_with_drain3(log_lines):
         cluster_id = result["cluster_id"]
         logger.info(f"Cluster ID: {cluster_id}")
 
-        # Push this single cluster ID to Redis
-        push_sequence([cluster_id])
+        batch.append(cluster_id)
+
+        # If batch reaches 20, push to Redis
+        if len(batch) >= batch_size:
+            push_sequence(batch)
+            logger.info(f"Pushed batch to Redis: {batch}")
+            batch = [] 
 
         params = template_miner.extract_parameters(result["template_mined"], cleaned_log_line)
         logger.info(f"Parameters: {params}")
 
+    # Push any remaining cluster IDs
+    if batch:
+        push_sequence(batch)
+        logger.info(f"Pushed final batch to Redis: {batch}")
+
     logger.info("Mined clusters:")
     for cluster in template_miner.drain.clusters:
         logger.info(f"ID={cluster.cluster_id} : size={cluster.size} : {cluster.get_template()}")
+
 
 if __name__ == "__main__":
     log_lines = query_loki()

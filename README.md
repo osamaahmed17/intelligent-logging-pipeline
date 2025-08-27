@@ -1,16 +1,17 @@
 
 # Intelligent Logging Pipeline
 
-We designed a simple yet efficient logging solution to simplify log collection, processing, and forwarding. 
-## Current Architecture
-#### Reconfigure the setup. It needs to be run again.
+We designed a simple yet efficient logging solution to simplify log processing and predict anomalies. 
 
+## Current Implementation Overview
 - Fluent Bit collects logs.
 - Sends logs to Kafka.
 - Alloy processes and transforms the logs from kafka.
 - Alloy Forwards logs to Loki.
 - Loki stores logs as indexes and chunks in MinIO.
-- Grafana visualizes the logs from Loki.
+- Drain3 queries logs from Loki and sends them to Redis.
+- Deeplog reads the logs from Redis to train the model.
+- Grafana visualizes the logs from Loki and anomalies from Deeplog.
 
 ## System  
 My current setup on which I am running this logging solution:  
@@ -29,17 +30,26 @@ My current setup on which I am running this logging solution:
 
 ## Technology
 
-We use these tools to develop this solution:
 
-[![Kubernetes](https://img.shields.io/badge/kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)][Kubernetes-url] 
+We use these tools to develop this solution:  
 
-[![Fluentbit](https://img.shields.io/badge/fluent--bit-800080?style=for-the-badge&logo=fluentbit&logoColor=white)][FluentBit-url] 
+[![Kubernetes](https://img.shields.io/badge/kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)][Kubernetes-url]  
 
-![Kafka](https://img.shields.io/badge/kafka-231F20?style=for-the-badge&logo=apache-kafka&logoColor=white)
+[![Fluentbit](https://img.shields.io/badge/fluent--bit-800080?style=for-the-badge&logo=fluentbit&logoColor=white)][FluentBit-url]  
 
-[![Grafana](https://img.shields.io/badge/grafana-F46800?style=for-the-badge&logo=grafana&logoColor=white)][Grafana-url] 
+[![Kafka](https://img.shields.io/badge/kafka-231F20?style=for-the-badge&logo=apache-kafka&logoColor=white)][Kafka-url]  
 
-![Loki](https://img.shields.io/badge/loki-000000?style=for-the-badge&logo=grafana&logoColor=white)
+[![Grafana](https://img.shields.io/badge/grafana-F46800?style=for-the-badge&logo=grafana&logoColor=white)][Grafana-url]  
+
+[![Loki](https://img.shields.io/badge/loki-000000?style=for-the-badge&logo=grafana&logoColor=white)][Loki-url]  
+
+![Redis](https://img.shields.io/badge/redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)
+
+![Drain3](https://img.shields.io/badge/drain3-3776AB?style=for-the-badge&logo=python&logoColor=white)
+
+![Deeplog](https://img.shields.io/badge/deeplog-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)
+
+---
 
 [Docker-url]: https://www.docker.com  
 [Fluentbit-url]: https://fluentbit.io/  
@@ -48,7 +58,9 @@ We use these tools to develop this solution:
 [Kubernetes-url]: https://kubernetes.io/  
 [Grafana-url]: https://grafana.com/  
 [Loki-url]: https://grafana.com/oss/loki/  
-[Kafka-url]: https://kafka.apache.org/
+[Kafka-url]: https://kafka.apache.org/  
+
+
 
 
 ## Configuration
@@ -220,7 +232,7 @@ Open the Grafana web UI by visiting http://localhost:3000
 Then go to Connections > Data sources, select Loki and go to Explore to show the logs of the payload.
 
 
-## Min IO setup
+## MinIO setup
 Loki sends logs to MinIO for storing log indexes and chunks.
  
 ```bash
@@ -246,6 +258,56 @@ kubectl create -f minio-newdeploy.yaml -f minio-service.yaml -f minio-pvc.yaml -
  Open the MinIO web UI by visiting http://localhost:9090 and create a bucket named logs. You will then see the logs stored as indexes and chunks.
 
  By default, the username and password of the MinIO UI are minioadmin. We will replace them using Kubernetes secrets.
+
+## Configure Drain3 And Redis
+Drain3 queries the logs from Loki and sends the npps logs to Redis. Deeplog then reads these logs and trains the model. Python files are also included so anyone can adjust the parameters of Drain3 and Deeplog before using them. Drain3 is configured as a CronJob in Kubernetes, and it can run every few minutes. 
+
+#### Create Drain3 Namespace
+```bash
+k create ns drain3
+```
+
+```bash
+kubectl config set-context --current --namespace drain3
+```
+#### Create Cronjob of Drain3 and Deployment of Redis
+
+```bash
+cd src/Drain3
+```
+```bash
+k create -f drain3.yaml -f redis.yaml
+```
+
+## Configure Deeplog
+Before configuring Deeplog we have to recreate fluentbit connfigmap and daemon set to allow the anomalies detected by deeplog visible on grafana dashboard 
+```bash
+cd src/deeplog/src
+```
+#### Create Deeplog Namespace
+```bash
+kubectl create ns deeplog
+```
+
+#### Create Deeplog Deployment 
+```bash
+k create -f deeplog.yaml -n deeplog
+```
+To view the anomalies we have to repeat the steps to use Grafana dashboard.
+#### Get the Username and Password for Grafana UI
+```bash
+kubectl get secret loki-grafana -o jsonpath="{.data.admin-user}" | base64 --decode
+```
+```bash
+kubectl get secret loki-grafana -o jsonpath="{.data.admin-password}" | base64 --decode
+```
+#### Access Grafana UI
+```bash
+kubectl port-forward svc/loki-grafana 3000:80 -n monitoring
+```
+Open the Grafana web UI by visiting http://localhost:3000 
+
+Then go to Connections > Data sources, select Loki and go to Explore and you have to select namsepace called deeplog to view anomalies.
 
 
 
