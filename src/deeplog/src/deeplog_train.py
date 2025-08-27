@@ -67,7 +67,7 @@ def report_result(is_anomaly: bool):
 # =====================
 # Custom Predict
 # =====================
-def custom_predict(model, X, y, k=2):
+def custom_predict(model, X, y, k):
     """Custom prediction function to avoid buggy DeepLog.predict."""
     model.eval()
     with torch.no_grad():
@@ -178,7 +178,7 @@ def detect_anomalies():
                     })
                     X, y, _, _ = preprocessor.sequence(data_df)
                     X, y = X.to(device), y.to(device)
-                    y_pred, confidence = custom_predict(model, X, y, k=2)
+                    y_pred, confidence = custom_predict(model, X, y, k=6)
                     result = f"Sequence {sequence_index}: {seq} - "
                     if y[0] not in y_pred[0]:
                         result += "Anomaly\n"
@@ -241,7 +241,7 @@ def monitor_redis():
                         })
                         X, y, _, _ = preprocessor.sequence(data_df)
                         X, y = X.to(device), y.to(device)
-                        y_pred, confidence = custom_predict(model, X, y, k=2)
+                        y_pred, confidence = custom_predict(model, X, y, k=6)
                         result = f"Sequence {sequence_index}: {seq} - "
                         if y[0] not in y_pred[0]:
                             result += "Anomaly\n"
