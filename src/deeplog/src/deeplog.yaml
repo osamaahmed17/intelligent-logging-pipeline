@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: deeplog-app
+  namespace: deeplog
   labels:
     app: deeplog-app
 spec:
@@ -23,6 +24,8 @@ spec:
         env:
         - name: REDIS_HOST
           value: "redis.drain3.svc.cluster.local"
+        - name: k_top
+          value: "6"
         command: ["python"]                # override CMD
         args: ["deeplog_train.py"]    # script to run
 
