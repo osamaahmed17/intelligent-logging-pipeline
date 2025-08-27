@@ -12,7 +12,7 @@ We designed a simple yet efficient logging solution to simplify log collection, 
 - Loki stores logs as indexes and chunks in MinIO.
 - Drain3 queries logs from Loki and sends them to Redis.
 - Deeplog reads the logs from Redis to train the model.
-- Grafana visualizes the logs from Loki.
+- Grafana visualizes the logs from Loki and Deeplog
 
 ## System  
 My current setup on which I am running this logging solution:  
@@ -233,7 +233,7 @@ Open the Grafana web UI by visiting http://localhost:3000
 Then go to Connections > Data sources, select Loki and go to Explore to show the logs of the payload.
 
 
-## Min IO setup
+## MinIO setup
 Loki sends logs to MinIO for storing log indexes and chunks.
  
 ```bash
@@ -281,7 +281,7 @@ k create -f drain3.yaml -f redis.yaml
 ```
 
 ## Configure Deeplog
-Before configuring Deeplog we have to recreate fluentbit connfigmap and daemon set to allow the anomalies detected by deeplog visible on grafana dashboard \
+Before configuring Deeplog we have to recreate fluentbit connfigmap and daemon set to allow the anomalies detected by deeplog visible on grafana dashboard 
 ```bash
 cd src/deeplog/src
 ```
