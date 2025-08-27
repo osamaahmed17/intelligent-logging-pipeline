@@ -1,0 +1,37 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: logcli-drain3
+  namespace: drain3
+spec:
+  schedule: "*/5 * * * *"  # Run every 15 minutes
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: logcli-drain3
+            image: osamaahmed17/dummydrain3
+            # image: osamaahmed17/drain3-forwarder
+            volumeMounts:
+            - name: drain3-persistence
+              mountPath: /var/drain3
+
+          volumes:
+          - name: drain3-persistence
+            persistentVolumeClaim:
+              claimName: drain3-pvc
+          restartPolicy: OnFailure
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: drain3-pvc
+  namespace: drain3
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

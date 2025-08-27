@@ -1,0 +1,12 @@
+2025-08-28 00:01:23 INFO  Server started successfully on port 8080
+2025-08-28 00:01:25 WARN  High memory usage detected (85%)
+2025-08-28 00:01:30 ERROR Database connection failed for user 'admin'
+2025-08-28 00:01:35 INFO  Retrying database connection...
+2025-08-28 00:01:40 INFO  Database connected successfully
+2025-08-28 00:02:01 INFO  New user registered: user123@example.com
+2025-08-28 00:02:15 WARN  Slow API response detected (endpoint: /api/data)
+2025-08-28 00:02:45 ERROR Failed to fetch data from external service
+2025-08-28 00:03:00 INFO  User login successful: user123@example.com
+2025-08-28 00:03:10 DEBUG Cache miss for key: 
+Muhammad
+Muhammad

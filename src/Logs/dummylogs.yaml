@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: log-reader
+  namespace: nppslogs
+  labels:
+    app: log-reader
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: log-reader
+  template:
+    metadata:
+      labels:
+        app: log-reader
+    spec:
+      containers:
+      - name: log-reader
+        image: osamaahmed17/dummylogs 
+        imagePullPolicy: IfNotPresent
+       
+---
