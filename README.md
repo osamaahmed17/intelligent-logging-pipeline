@@ -1,7 +1,7 @@
 
 # Intelligent Logging Pipeline
 
-We designed a simple yet efficient logging solution to simplify processing log processing and predicting anomalies. 
+We designed a simple yet efficient logging solution to simplify processing log and predicting anomalies. 
 ## Current Architecture
 #### Reconfigure the setup. It needs to be run again.
 
