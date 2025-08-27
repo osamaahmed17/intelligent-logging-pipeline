@@ -3,7 +3,7 @@
 
 We designed a simple yet efficient logging solution to simplify log processing and predict anomalies. 
 
-## Current Architecture Overview
+## Current Implementation Overview
 - Fluent Bit collects logs.
 - Sends logs to Kafka.
 - Alloy processes and transforms the logs from kafka.
