@@ -306,7 +306,7 @@ kubectl get secret loki-grafana -o jsonpath="{.data.admin-password}" | base64 --
 ```bash
 kubectl port-forward svc/loki-grafana 3000:80 -n monitoring
 ```
-Open the Grafana web UI by visiting http://localhost:3000 .
+Open the Grafana web UI by visiting http://localhost:3000 
 
 Then go to Connections > Data sources, select Loki and go to Explore and you have to select namsepace called deeplog to view anomalies.
 
